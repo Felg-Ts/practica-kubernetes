@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bookmedik-deployment
+  labels:
+    app: bookmedik
+    type: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bookmedik
+      type: frontend
+  template:
+    metadata:
+      labels:
+        app: bookmedik
+        type: frontend
+    spec:
+      containers:
+        - name: contenedor-bookmedik
+          image: felgts/bookmedik:v2
+          ports:
+            - containerPort: 80
+              name: http-port
+          env:
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: bd-datos
+                  key: bd_host
+            - name: DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: bd-datos
+                  key: bd_user
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: bd-passwords
+                  key: bd_password
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: bd-datos
+                  key: bd_dbname
+
